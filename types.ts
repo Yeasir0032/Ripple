@@ -1,5 +1,5 @@
 type LayerItemType = {
-  id: string;
+  id: number;
   layerType: LayerType;
   layerData: {
     point: Point;

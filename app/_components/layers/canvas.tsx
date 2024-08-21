@@ -7,6 +7,7 @@ import { useLayerData } from "@/lib/hooks/useLayerData";
 import SelectionBox from "./selection-box";
 import { useCameraLocation } from "@/lib/hooks/useCameraLocation";
 import {
+  drawShapes,
   getRealCursorLocationFromCamera,
   penPointsToPathLayer,
   resizeBounds,
@@ -24,9 +25,17 @@ const CanvasVector = () => {
     setTool,
     moveStartMouseLocation,
   } = useActiveTool();
-  const { layers, insertLayer, resizeLayer, selection, moveLayer } =
-    useLayerData();
+  const {
+    layers,
+    insertLayer,
+    resizeLayer,
+    selection,
+    moveLayer,
+    setSelection,
+  } = useLayerData();
   const [pencilDraft, setPencilDraft] = React.useState<number[][] | null>(null);
+  const [currentDrawingLayer, setCurrentDrawingLayer] =
+    React.useState<LayerItemType>();
 
   function startDrawing(point: Point) {
     setPencilDraft([[point.x, point.y]]);
@@ -109,6 +118,13 @@ const CanvasVector = () => {
     );
     if (tool === "Draw" && mainTool == "Draw") {
       startDrawing(currentMouseLocation);
+    } else if (tool == "Shape") {
+      setCanvasMode("Inserting");
+      const newLayer = insertLayer(mainTool, {
+        x: e.clientX - cameraLocation.x,
+        y: e.clientY - cameraLocation.y,
+      });
+      setCurrentDrawingLayer(newLayer);
     }
   }
 
@@ -127,6 +143,19 @@ const CanvasVector = () => {
         cameraLocation
       );
       continueDrawing(currentMouseLocation, e);
+    } else if (canvasMode == "Inserting" && currentDrawingLayer) {
+      const currentMouseLocation = getRealCursorLocationFromCamera(
+        {
+          x: e.clientX,
+          y: e.clientY,
+        },
+        cameraLocation
+      );
+      const bounds = drawShapes(
+        currentDrawingLayer.layerData.point,
+        currentMouseLocation
+      );
+      resizeLayer(currentDrawingLayer.id, bounds);
     }
   }
 
@@ -134,10 +163,7 @@ const CanvasVector = () => {
     switch (tool) {
       case "Shape":
         // insertLaayer(e);
-        insertLayer(mainTool, {
-          x: e.clientX - cameraLocation.x,
-          y: e.clientY - cameraLocation.y,
-        });
+
         break;
       case "Move":
         break;
@@ -161,6 +187,8 @@ const CanvasVector = () => {
       setTool("Move");
     } else if (canvasMode === "Moving") {
       setCanvasMode("None");
+    } else if (canvasMode === "Inserting") {
+      setCanvasMode("None");
     }
   }
 
@@ -175,6 +203,7 @@ const CanvasVector = () => {
       onWheel={onWheel}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
+      // onClick={}
     >
       <g
         style={{

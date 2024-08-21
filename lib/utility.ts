@@ -1,5 +1,3 @@
-import { useCameraLocation } from "./hooks/useCameraLocation";
-
 export function getRealCursorLocationFromCamera(
   location: Point,
   cameraLocation: Point
@@ -8,6 +6,15 @@ export function getRealCursorLocationFromCamera(
     x: location.x - cameraLocation.x,
     y: location.y - cameraLocation.y,
   };
+}
+export function drawShapes(startPoint: Point, currentPoint: Point) {
+  const bounds: XYWH = {
+    x: Math.min(startPoint.x, currentPoint.x),
+    y: Math.min(startPoint.y, currentPoint.y),
+    width: Math.abs(currentPoint.x - startPoint.x),
+    height: Math.abs(currentPoint.y - startPoint.y),
+  };
+  return bounds;
 }
 export function resizeBounds(
   bounds: XYWH,

@@ -7,43 +7,45 @@ interface LayerData {
     layerType: LayerType,
     point: Point,
     pathLayerData?: { points: number[][]; width: number; height: number }
-  ) => void;
-  setSelection: (layerItem: LayerItemType) => void;
+  ) => LayerItemType;
+  setSelection: (layerItem?: LayerItemType) => void;
   resizeLayer: (layerId: number, bounds: XYWH) => void;
-  editTextLayerData: (textData: string, id: string) => void;
+  editTextLayerData: (textData: string, id: number) => void;
   moveLayer: (layerId: number, x: number, y: number) => void;
 }
-export const useLayerData = create<LayerData>((set) => ({
+export const useLayerData = create<LayerData>((set, get) => ({
   layers: [],
   selection: undefined,
-  insertLayer: (layerType, point, pathLayerData) =>
-    set((state) => {
-      const newLayer: LayerItemType = {
-        id: state.layers.length.toString(),
-        layerType: layerType,
-        layerData: {
-          borderRadius: 50,
-          point: point,
-          width: 100,
-          height: 100,
-        },
+  insertLayer: (layerType, point, pathLayerData) => {
+    const { layers } = get();
+    const newLayer: LayerItemType = {
+      id: layers.length,
+      layerType: layerType,
+      layerData: {
+        borderRadius: 50,
+        point: point,
+        width: 10,
+        height: 10,
+      },
+    };
+    if (layerType == "Text") {
+      newLayer.textData = {
+        data: "Text",
+        fontSize: 20,
       };
-      if (layerType == "Text") {
-        newLayer.textData = {
-          data: "Text",
-          fontSize: 20,
-        };
-      }
-      if (layerType == "Draw" && pathLayerData) {
-        newLayer.pathData = {
-          points: pathLayerData.points,
-        };
-        newLayer.layerData.width = pathLayerData.width;
-        newLayer.layerData.height = pathLayerData.height;
-      }
-      // console.log(newLayer);
+    }
+    if (layerType == "Draw" && pathLayerData) {
+      newLayer.pathData = {
+        points: pathLayerData.points,
+      };
+      newLayer.layerData.width = pathLayerData.width;
+      newLayer.layerData.height = pathLayerData.height;
+    }
+    set((state) => {
       return { layers: [...state.layers, newLayer], selection: undefined };
-    }),
+    });
+    return newLayer;
+  },
   setSelection: (layerItem) => set({ selection: layerItem }),
   resizeLayer: (layerId, bounds) =>
     set((state) => {
@@ -63,13 +65,12 @@ export const useLayerData = create<LayerData>((set) => ({
     }),
   editTextLayerData: (textData, id) =>
     set((state) => {
-      //TODO:
       const layers = state.layers;
-      const layerData = layers[Number.parseInt(id)].textData;
+      const layerData = layers[id].textData;
       if (layerData) {
         layerData.data = textData;
       }
-      layers[Number.parseInt(id)].textData = layerData;
+      layers[id].textData = layerData;
       return { layers: layers };
     }),
   moveLayer: (layerId, x, y) =>
