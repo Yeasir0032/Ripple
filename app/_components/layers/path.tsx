@@ -28,8 +28,7 @@ const PathLayer = ({ layer, onPointerDown }: props) => {
       }}
       x={0}
       y={0}
-      fill="white"
-      stroke="1"
+      fill={layer.layerData.fill}
       onPointerDown={onPointerDown}
     />
   );

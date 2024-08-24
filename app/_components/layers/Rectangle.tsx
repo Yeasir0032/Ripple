@@ -12,9 +12,9 @@ const RectangleLayer = memo(({ layer, onPointerDown }: props) => {
       className={"drop-shadow-md"}
       x={layer.layerData.point.x}
       y={layer.layerData.point.y}
-      fill="white"
-      rx={20}
-      ry={20}
+      fill={layer.layerData.fill}
+      rx={layer.layerData.borderRadius}
+      ry={layer.layerData.borderRadius}
       width={layer.layerData.width}
       height={layer.layerData.height}
       onPointerDown={onPointerDown}

@@ -17,7 +17,7 @@ const EllipseLayer = memo(({ layer, onPointerDown }: props) => {
       rx={layer.layerData.width / 2}
       ry={layer.layerData.height / 2}
       cy={layer.layerData.height / 2}
-      fill="white"
+      fill={layer.layerData.fill}
       onPointerDown={onPointerDown}
     />
   );

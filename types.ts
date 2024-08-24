@@ -6,7 +6,7 @@ type LayerItemType = {
     borderRadius: number;
     height: number;
     width: number;
-    fill?: Color;
+    fill: string;
   };
   textData?: {
     data: string;
@@ -27,6 +27,7 @@ type Color = {
   r: number;
   g: number;
   b: number;
+  a: number;
 };
 type Point = {
   x: number;

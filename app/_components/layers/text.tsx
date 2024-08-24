@@ -1,4 +1,5 @@
 import { useLayerData } from "@/lib/hooks/useLayerData";
+import { cn } from "@/lib/utils";
 import React from "react";
 import ContentEditable from "react-contenteditable";
 interface props {
@@ -8,6 +9,8 @@ interface props {
 }
 const TextLayer = ({ layer, onPointerDown }: props) => {
   const { editTextLayerData } = useLayerData();
+  const color = layer.layerData.fill.slice(1, 7);
+
   return (
     <foreignObject
       x={layer.layerData.point.x}
@@ -19,11 +22,13 @@ const TextLayer = ({ layer, onPointerDown }: props) => {
         fill: "none",
         overflow: "visible",
       }}
-      onClick={(e) => onPointerDown(e)}
+      onPointerDown={(e) => onPointerDown(e)}
     >
       <ContentEditable
         html={layer.textData ? layer.textData.data : "Text"}
-        className="h-full w-full text-white bg-transparent flex items-center justify-center text-center drop-shadow-md outline-none"
+        className={cn(
+          `w-full bg-transparent text-white flex items-center justify-center text-center drop-shadow-md outline-none  `
+        )}
         onChange={(e) => {
           editTextLayerData(e.target.value, layer.id);
         }}

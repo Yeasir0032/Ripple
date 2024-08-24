@@ -9,8 +9,8 @@ export function getRealCursorLocationFromCamera(
 }
 export function drawShapes(startPoint: Point, currentPoint: Point) {
   const bounds: XYWH = {
-    x: Math.min(startPoint.x, currentPoint.x),
-    y: Math.min(startPoint.y, currentPoint.y),
+    x: startPoint.x,
+    y: startPoint.y,
     width: Math.abs(currentPoint.x - startPoint.x),
     height: Math.abs(currentPoint.y - startPoint.y),
   };
@@ -35,13 +35,10 @@ export function resizeBounds(
       result.y = Math.min(point.y, bounds.y + bounds.height);
       break;
     case "BottomRight":
-      // console.log(bounds.width - bounds.x);
-      // result.x = Math.min(point.x, Math.absbounds.width - bounds.x);
       result.height = Math.abs(point.y - bounds.y);
       result.width = Math.abs(point.x - bounds.x);
       break;
     case "BottomLeft":
-      // console.log(bounds.x - point.x);
       result.width = Math.abs(bounds.x + bounds.width - point.x);
       result.x = point.x;
       result.height = Math.abs(point.y - bounds.y);
@@ -89,8 +86,10 @@ export function getSvgPathFromStroke(stroke: number[][]) {
   d.push("Z");
   return d.join(" ");
 }
-// export function getPointToMoveToNewLocation(previousPoint:Point,mouseLocation:Point) {
-//   const result: Point = {x:0,y:0};
-//   result.x = previousPoint.x - mouseLocation.x;
-//   result.y = previousPoint.y - mouseLocation.y;
+// export function getHexFromColor(color: Color) {
+//   return `#${color.r.toString(16).padStart(2, "0")}${color.g
+//     .toString(16)
+//     .padStart(2, "0")}${color.b.toString(16).padStart(2, "0")}${color.a
+//     .toString(16)
+//     .padStart(2, "0")}`;
 // }

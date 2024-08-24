@@ -175,6 +175,7 @@ const CanvasVector = () => {
           y: e.clientY - cameraLocation.y,
         });
         setTool("Move");
+        setCanvasMode("None");
         break;
       case "Panel":
         break;

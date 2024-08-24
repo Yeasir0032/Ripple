@@ -14,7 +14,7 @@ const SelectionBox = () => {
     width: selection.layerData.width,
     height: selection.layerData.height,
   };
-
+  // console.log(typeof selection.layerData.height);
   return (
     <>
       <rect

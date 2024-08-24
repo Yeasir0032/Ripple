@@ -2,14 +2,14 @@
 import Image from "next/image";
 import React from "react";
 import NavMenuItem from "./nav-menu-item";
-import { Hash, MousePointer2 } from "lucide-react";
+import { Frame, MousePointer2, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useActiveTool } from "@/lib/hooks/useActiveTool";
 
 const NavbarHeader = () => {
   const { tool, setTool } = useActiveTool();
   return (
-    <div className="max-h-12 h-12 min-h-12 fixed bg-[#2f2f35] t-0 w-screen flex text-white">
+    <div className="max-h-12 h-12 min-h-12 fixed bg-[#2f2f35] t-0 w-screen flex text-white border-b border-zinc-600">
       {/* Logo */}
       <Image
         src="/favicon.ico"
@@ -34,7 +34,7 @@ const NavbarHeader = () => {
         )}
         onClick={() => setTool("Panel")}
       >
-        <Hash className="h-full " />
+        <Frame className="h-full " />
       </span>
       <NavMenuItem type="Shape" />
       <NavMenuItem type="Draw" />
@@ -45,7 +45,7 @@ const NavbarHeader = () => {
         )}
         onClick={() => setTool("Text")}
       >
-        T
+        <Type />
       </span>
     </div>
   );

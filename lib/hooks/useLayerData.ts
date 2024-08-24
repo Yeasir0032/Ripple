@@ -8,10 +8,17 @@ interface LayerData {
     point: Point,
     pathLayerData?: { points: number[][]; width: number; height: number }
   ) => LayerItemType;
-  setSelection: (layerItem?: LayerItemType) => void;
+  setSelection: (layerItem?: LayerItemType, id?: number) => void;
   resizeLayer: (layerId: number, bounds: XYWH) => void;
   editTextLayerData: (textData: string, id: number) => void;
   moveLayer: (layerId: number, x: number, y: number) => void;
+  setAttributes: (
+    attr: "x" | "y" | "w" | "h" | "br" | "color" | "stroke",
+    layerId: number,
+    valueNum?: number,
+    valueColor?: string
+  ) => void;
+  reorderLayers: (sourceIndex: number, destinationIndex: number) => void;
 }
 export const useLayerData = create<LayerData>((set, get) => ({
   layers: [],
@@ -24,8 +31,9 @@ export const useLayerData = create<LayerData>((set, get) => ({
       layerData: {
         borderRadius: 50,
         point: point,
-        width: 10,
-        height: 10,
+        width: layerType === "Text" ? 100 : 10,
+        height: layerType === "Text" ? 30 : 10,
+        fill: "#ffffffff",
       },
     };
     if (layerType == "Text") {
@@ -46,17 +54,26 @@ export const useLayerData = create<LayerData>((set, get) => ({
     });
     return newLayer;
   },
-  setSelection: (layerItem) => set({ selection: layerItem }),
+  setSelection: (layerItem, layerId) =>
+    set((state) => {
+      if (layerId != undefined) {
+        return { selection: state.layers[layerId] };
+      }
+      if (layerItem) {
+        return { selection: layerItem };
+      }
+      return state;
+    }),
   resizeLayer: (layerId, bounds) =>
     set((state) => {
       const layers = state.layers;
       layers[layerId].layerData = {
+        ...layers[layerId].layerData,
         point: {
           x: bounds.x,
           y: bounds.y,
         },
         width: bounds.width,
-        borderRadius: 10,
         height: bounds.height,
       };
       return {
@@ -83,5 +100,49 @@ export const useLayerData = create<LayerData>((set, get) => ({
       return {
         layers: layers,
       };
+    }),
+  setAttributes: (attr, layerId, valueNum, valueColor) =>
+    set((state) => {
+      const layers = state.layers;
+      const layer = layers[layerId];
+      if (valueNum) {
+        switch (attr) {
+          case "x":
+            layer.layerData.point.x = valueNum;
+            break;
+          case "y":
+            layer.layerData.point.y = valueNum;
+            break;
+          case "w":
+            layer.layerData.width = valueNum;
+            break;
+          case "h":
+            layer.layerData.height = valueNum;
+            break;
+          case "br":
+            layer.layerData.borderRadius = valueNum;
+            break;
+          case "stroke":
+            break;
+          default:
+            break;
+        }
+      }
+      if (valueColor && attr == "color") {
+        layer.layerData.fill = valueColor;
+      }
+      return { layers: layers };
+    }),
+  reorderLayers: (sourceIndex, destinationIndex) =>
+    set((state) => {
+      const layers = state.layers;
+      const [removed] = layers.splice(sourceIndex, 1);
+      layers.splice(destinationIndex, 0, removed);
+      //Setup id s too
+      layers.forEach((layer, index) => {
+        layer.id = index;
+      });
+
+      return { layers: layers };
     }),
 }));
