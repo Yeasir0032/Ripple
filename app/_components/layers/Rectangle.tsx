@@ -1,12 +1,10 @@
-import { memo } from "react";
-
 interface props {
   layer: LayerItemType;
   onPointerDown: (e: React.PointerEvent) => void;
   selectionColor?: string;
 }
 
-const RectangleLayer = memo(({ layer, onPointerDown }: props) => {
+const RectangleLayer = ({ layer, onPointerDown }: props) => {
   return (
     <rect
       className={"drop-shadow-md"}
@@ -20,6 +18,6 @@ const RectangleLayer = memo(({ layer, onPointerDown }: props) => {
       onPointerDown={onPointerDown}
     />
   );
-});
+};
 
 export default RectangleLayer;

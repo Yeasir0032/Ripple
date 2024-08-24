@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 
 interface props {
   layer: LayerItemType;
@@ -6,7 +6,7 @@ interface props {
   selectionColor?: string;
 }
 
-const EllipseLayer = memo(({ layer, onPointerDown }: props) => {
+const EllipseLayer = ({ layer, onPointerDown }: props) => {
   return (
     <ellipse
       className="drop-shadow-md"
@@ -21,6 +21,6 @@ const EllipseLayer = memo(({ layer, onPointerDown }: props) => {
       onPointerDown={onPointerDown}
     />
   );
-});
+};
 
 export default EllipseLayer;
